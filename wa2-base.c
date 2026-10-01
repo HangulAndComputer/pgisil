@@ -31,7 +31,7 @@ int readIntInRange(int lo, int hi)
     
     int num;
     scanf("%d", &num);
-    while(!(lo <= num <= hi)) {
+    while(num < lo || hi < num) {
         printf("[오류] %d~%d 사이의 값을 입력하세요.\n", lo, hi);
         printf("> ");
         scanf("%d", &num);
@@ -74,7 +74,7 @@ int daysInMonth(int year, int month)
     } else {
         day = 31;
     }
-    return 0;
+    return day;
 }
 
 /* ── [TODO 요구사항 3] 그 달 1일의 요일 (0=일 … 6=토) ─────────────
@@ -110,8 +110,19 @@ int firstWeekdayOf(int year, int month)
  *       ─ 빈 칸을 찍고 「그 칸은 여기까지」로 넘어가는 방법이 있습니다. */
 void printCalendar(int firstWeekday, int days)
 {
-    (void)firstWeekday; (void)days;
-    printf("(아직 미구현입니다 — 요구사항 4 를 채우면 이 줄을 지우세요)\n");
+    int line = ((firstWeekday + days - 1) / 7) + 1;
+    int d = 1;
+    for (int i = 1; i <= line; i++) {
+        for (int j = 0; j <= 6; j++) {
+            if ((i == 1 && j < firstWeekday) || (d > days)) {
+                printf("    ");
+            } else {
+                printf("%3d ", d);
+                d = d + 1;
+            }
+        }
+        printf("\n");
+    }
 }
 
 /* ── [수정 금지] ─────────────────────────────────────────── */
