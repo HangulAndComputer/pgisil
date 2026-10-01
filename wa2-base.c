@@ -28,16 +28,32 @@ void printCalendar(int firstWeekday, int days);
  * 함정: 첫 질문은 부르는 쪽(main)이 이미 찍었습니다. 여기서 또 찍지 마세요. */
 int readIntInRange(int lo, int hi)
 {
-    (void)lo; (void)hi;   /* 구현을 시작하면 이 줄을 지우세요 */
-    return 0;
+    
+    int num;
+    scanf("%d", &num);
+    while(!(lo <= num <= hi)) {
+        printf("[오류] %d~%d 사이의 값을 입력하세요.\n", lo, hi);
+        printf("> ");
+        scanf("%d", &num);
+    } 
+    
+    
+    return num;
 }
 
 /* ── [TODO 요구사항 2-a] 윤년이면 1, 아니면 0 을 반환 ─────────────
  * 실습#1 에서 main 안에 썼던 식을 그대로 옮겨 오면 됩니다. */
 int isLeapYear(int year)
 {
-    (void)year;
-    return 0;
+
+
+    int isLeap = 0;
+    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0){
+        isLeap = 1;
+    }
+
+    
+    return isLeap;
 }
 
 /* ── [TODO 요구사항 2-b] 그 달의 일수를 반환 ──────────────────────
@@ -46,7 +62,18 @@ int isLeapYear(int year)
  *       같은 조건식을 두 번 쓰면 함수로 나눈 의미가 없습니다. */
 int daysInMonth(int year, int month)
 {
-    (void)year; (void)month;
+    int day = 0;
+    if (month == 4 || month == 6 || month == 9 || month == 11){
+        day = 30;
+    } else if (month == 2) {
+        if (isLeapYear(year)) {
+            day = 29;
+        } else {
+            day = 28;
+        }
+    } else {
+        day = 31;
+    }
     return 0;
 }
 
@@ -59,8 +86,18 @@ int daysInMonth(int year, int month)
  *       2000년 1월을 넣으면 경과일이 0 이고 요일이 그대로 토요일이어야 합니다. */
 int firstWeekdayOf(int year, int month)
 {
-    (void)year; (void)month;
-    return 0;
+    int whatday = 6;
+    for (int i = 2000; i < year; i++) {
+        if (isLeapYear(i)) {
+            whatday = (whatday + 366) % 7;
+        } else {
+            whatday = (whatday + 365) % 7;
+        }
+    }
+    for (int i = 1; i < month; i++) {
+        whatday = (whatday + daysInMonth(year, month)) % 7;      
+    }
+    return whatday;
 }
 
 /* ── [TODO 요구사항 4] 달력 격자 출력 ─────────────────────────────
