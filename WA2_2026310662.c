@@ -116,10 +116,11 @@ void printCalendar(int firstWeekday, int days)
         for (int j = 0; j <= 6; j++) {
             if ((i == 1 && j < firstWeekday) || (d > days)) {
                 printf("    ");
-            } else {
-                printf("%3d ", d);
-                d = d + 1;
+                continue;
             }
+            
+            printf("%3d ", d);
+            d = d + 1;
         }
         printf("\n");
     }
