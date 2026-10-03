@@ -95,7 +95,7 @@ int firstWeekdayOf(int year, int month)
         }
     }
     for (int i = 1; i < month; i++) {
-        whatday = (whatday + daysInMonth(year, month)) % 7;      
+        whatday = (whatday + daysInMonth(year, i)) % 7;      
     }
     return whatday;
 }
