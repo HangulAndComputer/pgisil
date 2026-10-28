@@ -26,8 +26,8 @@
  * 함정: 매개변수를 괄호로 감싸세요. 매크로는 「글자 그대로 갈아끼우기」라
  *       괄호가 없으면 DAY_BIT(x+1) 같은 호출에서 엉뚱한 값이 나옵니다.
  * 아래 두 줄의 (0u)·(0) 을 지우고 여러분의 식을 넣으세요. */
-#define DAY_BIT(d)      (0u)
-#define IS_DONE(m, d)   (0)
+#define DAY_BIT(d)      (1 << (d-1))
+#define IS_DONE(m, d)   (doneMask[m] & DAY_BIT(d))
 
 /* ── [수정 금지] 파일 스코프 상태 ─────────────────────────── */
 char         habitName[MAX_HABITS][MAX_NAME];
@@ -131,8 +131,9 @@ void readHabits(void)
     habitCount = readIntInRange(1, MAX_HABITS);
     for (int h = 0; h < habitCount; h++) {
         printf("%d번 습관 이름 (공백 없이): ", h + 1);
-        scanf("%31s", habitName[0]);
+        scanf("%31s", habitName[h]);
         flushLine();      /* ← 임시: 전부 0번에 덮어씁니다 */
+        doneMask[h] = 0u;
     }
 }
 
@@ -144,8 +145,13 @@ void readHabits(void)
  * 함정: 끄기는 「그 자리만 0 으로」입니다. 나머지 30칸은 그대로 있어야 합니다. */
 void toggleDay(int h, int d)
 {
-    (void)h; (void)d;
-    printf("(아직 미구현입니다 — 요구사항 2)\n");
+    doneMask[h] ^= DAY_BIT(d);
+    if IS_DONE(h,d) {
+        printf("[%s] %d일을 체크했습니다.\n", habitName[h],d);
+    } else {
+        printf("[%s] %d일 체크를 해제했습니다.\n", habitName[h],d);
+    }
+      
 }
 
 /* ── [TODO 요구사항 3] 달력 + 체크 표시 + 달성 요약 ───────────────
@@ -161,8 +167,30 @@ void toggleDay(int h, int d)
  *       무엇을 넣든 0.0%% 가 나옵니다. 2주차의 자료형을 떠올리세요. */
 void printCalendar(int h)
 {
-    (void)h;
-    printf("(아직 미구현입니다 — 요구사항 3)\n");
+    printCalendarHeader(h);
+    
+    int days = curDays + curFirstWeekday;
+    int lines = (days-1) / 7 + 1;
+    int day = 1;
+    int dals = 0;
+    for (int i = 0; i < lines; i++) {
+        for (int j = 0; j < 7; j++) {
+        //printf("debug d:%d, curf:%d, days:%d",d,curFirstWeekday,days);  
+            //printf("debug daybit: %d, isdone:%d",DAY_BIT(d),IS_DONE(h,d-1));
+            if ( (i == 0 && j < curFirstWeekday) || day > curDays) {printf("    "); continue;}
+            if IS_DONE(h, day){
+                printf("%3d%c", day, '*');
+                dals++;
+            } else {
+                printf("%3d%c", day, ' ');
+            }
+       // printf("debug d : %d", d);
+ 
+            day++;
+        }
+        printf("\n");
+    }
+    printf("\n[%s] %d일 / %d일 달성 (%.1f%%)\n", habitName[h], dals, curDays, (float)dals/curDays * 100);
 }
 
 /* ── [TODO 요구사항 4] 습관 × 주차 집계표 ─────────────────────────
@@ -176,7 +204,40 @@ void printCalendar(int h)
  * 힌트: 집계할 때는 바깥이 습관, 안쪽이 날짜입니다. */
 void printWeeklyTable(void)
 {
-    printf("(아직 미구현입니다 — 요구사항 4)\n");
+    int days = curDays + curFirstWeekday;
+    int lines = (days-1) / 7 + 1;
+    int beyol[habitCount][lines];
+    for (int i = 0; i < habitCount; i++){
+        for (int j = 0; j < lines; j++){
+            beyol[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < habitCount; i++) {
+        for (int j = 1; j <= curDays; j++) {
+            int ju = (j + curFirstWeekday -1) / 7;
+            if IS_DONE(i, j) {
+                beyol[i][ju]++;
+                //printf("%d\n", beyol[i][ju]);
+            }
+        }
+    }
+    printf("\n=== 주간 집계 (%d년 %d월) ===\n", curYear, curMonth);
+    
+    for (int i = -1; i < habitCount ; i++) {
+        if (i == -1){
+            printf("%-10s", "습관");
+            for(int j = 0; j < lines; j++){
+                printf("%4d주", j+1);
+            }
+        } else {
+            printf("%-10s", habitName[i]);
+            for (int j = 0; j < lines; j++){
+                printf("%5d", beyol[i][j]);
+            }
+        }
+        printf("\n");
+    }
+
 }
 
 /* ── [수정 금지] ─────────────────────────────────────────── */
