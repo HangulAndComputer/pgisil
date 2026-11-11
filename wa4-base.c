@@ -199,7 +199,7 @@ void readHabits(void)
         dummy = readIntInRange(1, 3);
         habits[h].cat = dummy;
         habits[h].doneMask = 0;
-        printf("DEBUG: %s %d %d", habits[h].name, habits[h].cat, habits[h].doneMask);
+        //printf("DEBUG: %s %d %d", habits[h].name, habits[h].cat, habits[h].doneMask);
     }
     (void)dummy;
 }
@@ -224,7 +224,7 @@ void renameHabit(Habit *h)
     printf("[%s] → [%s] 로 바꿨습니다.\n",h->name, newName);
     (void)h;
     strcpy(h->name, newName);
-    printf("DEBUG: %s", h->name);
+    //printf("DEBUG: %s", h->name);
 }
 
 /* ── [TODO 요구사항 3] out-parameter 로 두 값을 돌려준다 ─────────
@@ -249,16 +249,16 @@ void habitStats(const Habit *h, int *pDone, int *pBest)
         if IS_DONE(h->doneMask, i+1) {
             *pDone = *pDone + 1;
             count++;
-            printf("DEBUG: %d일 done", i+1);
+            //printf("DEBUG: %d일 done", i+1);
         } else {
-            printf("DEBUG: not done");
+            //printf("DEBUG: not done");
             if (*pBest < count) {
                 *pBest = count;
             }
             count = 0;
         }
     }
-    printf("DEBUG: %d %d",*pDone,*pBest);
+    //printf("DEBUG: %d %d",*pDone,*pBest);
 }
 
 
@@ -271,7 +271,12 @@ void habitStats(const Habit *h, int *pDone, int *pBest)
 const char *categoryName(Category c)
 {
     (void)c;
-    return "?";
+    switch (c){
+        case CAT_HEALTH: return "건강";
+        case CAT_STUDY: return "학습";
+        case CAT_LIFE: return "생활";
+    }
+
 }
 
 /* ── [TODO 요구사항 4-b] 분류별 집계 ─────────────────────────────
@@ -287,7 +292,21 @@ const char *categoryName(Category c)
  * 함정: 분류 값을 1·2·3 으로 세지 말고 열거형 이름으로 처음과 끝을 잡으세요. */
 void printByCategory(void)
 {
-    printf("(아직 미구현입니다 — 요구사항 4-b)\n");
+    printf("--- 분류별 집계 ---\n");
+    int catCount[3][2] = {0};
+    for (int i = 0; i < habitCount; i++){
+        catCount[habits[i].cat-1][0]++;
+        int done = 0;
+        int best = 0;
+        habitStats(&habits[i], &done , &best );
+        catCount[habits[i].cat-1][1] += done;
+
+    }
+    for (int i = CAT_HEALTH; i <= CAT_LIFE; i++ ){
+        printf(" %s %d개 달성 %d일\n", categoryName(i), catCount[i-1][0], catCount[i-1][1]);
+    }
+    printf("-------------------");
+    
 }
 
 /* ── [수정 금지] ─────────────────────────────────────────── */
