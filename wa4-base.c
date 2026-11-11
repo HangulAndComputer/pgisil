@@ -308,7 +308,7 @@ void printByCategory(void)
     for (int i = CAT_HEALTH; i <= CAT_LIFE; i++ ){
         printf(" %s %d개 달성 %d일\n", categoryName(i), catCount[i-1][0], catCount[i-1][1]);
     }
-    printf("-------------------");
+    printf("-------------------\n");
     
 }
 
