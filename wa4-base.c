@@ -278,6 +278,7 @@ const char *categoryName(Category c)
         case CAT_HEALTH: return "건강";
         case CAT_STUDY: return "학습";
         case CAT_LIFE: return "생활";
+        default: return "어찌라고";
     }
 
 }
