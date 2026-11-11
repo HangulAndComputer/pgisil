@@ -197,7 +197,7 @@ void readHabits(void)
         flushLine();          /* ← 임시: 전부 0번에 덮어씁니다 */
         printf("   분류 (1=건강 2=학습 3=생활): ");
         dummy = readIntInRange(1, 3);
-        habits[h].cat = dummy;
+        habits[h].cat = (Category)dummy;
         habits[h].doneMask = 0;
         //printf("DEBUG: %s %d %d", habits[h].name, habits[h].cat, habits[h].doneMask);
     }
