@@ -245,8 +245,8 @@ void habitStats(const Habit *h, int *pDone, int *pBest)
     *pDone = 0;
     *pBest = 0;
     int count = 0;
-        for (int i = 0; i < curDays; i++ ) {
-        if IS_DONE(h->doneMask, i+1) {
+    for (int i = 0; i < curDays; i++ ) {
+        if (IS_DONE(h->doneMask, i+1)) {
             *pDone = *pDone + 1;
             count++;
             //printf("DEBUG: %d일 done", i+1);
@@ -257,6 +257,9 @@ void habitStats(const Habit *h, int *pDone, int *pBest)
             }
             count = 0;
         }
+    }
+    if (*pBest < count) {
+        *pBest = count;
     }
     //printf("DEBUG: %d %d",*pDone,*pBest);
 }
