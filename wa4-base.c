@@ -10,6 +10,7 @@
  *   · 포인터 산술·동적 메모리·파일 입출력은 쓰지 않습니다. (이번 과제의 범위 밖입니다)
  */
 #include <stdio.h>
+#include <string.h>
 
 #define MAX_HABITS 5
 #define MAX_NAME   32
@@ -192,10 +193,13 @@ void readHabits(void)
     habitCount = readIntInRange(1, MAX_HABITS);
     for (int h = 0; h < habitCount; h++) {
         printf("%d번 습관 이름 (공백 없이): ", h + 1);
-        scanf("%31s", habits[0].name);
+        scanf("%31s", habits[h].name);
         flushLine();          /* ← 임시: 전부 0번에 덮어씁니다 */
         printf("   분류 (1=건강 2=학습 3=생활): ");
         dummy = readIntInRange(1, 3);
+        habits[h].cat = dummy;
+        habits[h].doneMask = 0;
+        printf("DEBUG: %s %d %d", habits[h].name, habits[h].cat, habits[h].doneMask);
     }
     (void)dummy;
 }
@@ -216,9 +220,11 @@ void renameHabit(Habit *h)
     char newName[MAX_NAME];
     printf("새 이름 (공백 없이): ");
     scanf("%31s", newName);
-    flushLine();           /* ← 입력은 읽되 아직 반영하지 않습니다 */
+    flushLine();      
+    printf("[%s] → [%s] 로 바꿨습니다.\n",h->name, newName);
     (void)h;
-    printf("(아직 미구현입니다 — 요구사항 2)\n");
+    strcpy(h->name, newName);
+    printf("DEBUG: %s", h->name);
 }
 
 /* ── [TODO 요구사항 3] out-parameter 로 두 값을 돌려준다 ─────────
@@ -238,6 +244,21 @@ void habitStats(const Habit *h, int *pDone, int *pBest)
     (void)h;
     *pDone = 0;
     *pBest = 0;
+    int count = 0;
+        for (int i = 0; i < curDays; i++ ) {
+        if IS_DONE(h->doneMask, i+1) {
+            *pDone = *pDone + 1;
+            count++;
+            printf("DEBUG: %d일 done", i+1);
+        } else {
+            printf("DEBUG: not done");
+            if (*pBest < count) {
+                *pBest = count;
+            }
+            count = 0;
+        }
+    }
+    printf("DEBUG: %d %d",*pDone,*pBest);
 }
 
 
