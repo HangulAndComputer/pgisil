@@ -7,6 +7,7 @@ typedef struct{
 void stat(const Person *p, int *a){
     *a = (p->age) + 1;
 }
+
 int main(){
     Person minsu = {"minsu", 20};
     Person yh = {"younghee",21};
@@ -18,6 +19,7 @@ int main(){
         int ho = 0;
         stat(ptr,&ho);
         printf("%d", ho);
+
         ptr += 1;
     }
 }

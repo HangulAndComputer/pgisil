@@ -228,15 +228,18 @@ void habitStats(const Habit *h, int *pDone, int *pBest)
  *          sizeof(arr) 로는 원소 수를 알 수 없습니다 — 포인터의 크기가 나옵니다. */
 void printSummary(const Habit *arr, int n)
 {
-    (void)arr; (void)n;   
-    printf("\n=== 전체 요약 (%d년 %d월) ===\n");
+      
+    printf("\n=== 전체 요약 (%d년 %d월) ===\n", curYear, curMonth);
+    int sum = 0;
     for (int i = 0; i < n; i++){
         int nal = 0;
         int dum = 0;
         habitStats(arr, &nal, &dum);
-        printf("%d. %-10s (%s) %3d일\n",i+1, arr->name, arr->cat, nal);
+        printf("%d. %-10s (%s) %3d일\n",i+1, arr->name, categoryName(arr->cat), nal);
+        sum += nal;
         arr += 1;
     }
+    printf("합계: %d일\n", sum);
     
 }
 
