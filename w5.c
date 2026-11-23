@@ -261,13 +261,52 @@ void printSummary(const Habit *arr, int n)
  *          fclose 를 빠뜨리면 내용이 파일에 안 남을 수 있습니다. */
 void saveToFile(void)
 {
-    printf("(아직 미구현입니다 — 요구사항 2)\n");
+    FILE *fp = fopen(SAVE_PATH, "w");
+    if (fp == NULL) {
+        printf("[오류] 저장에 실패했습니다.\n");
+    } else {
+        fprintf(fp, "%d %d %d\n", curYear, curMonth, habitCount);
+        for (int i = 0; i < habitCount; i++){
+            Habit h = habits[i];
+            fprintf(fp, "%s %d %u\n", h.name, h.cat, h.doneMask);
+        }
+        printf("%d개 습관을 저장했습니다.\n", habitCount);
+        fclose(fp);
+    }
+    
+    
 }
 
 int loadFromFile(void)
 {
-    printf("(아직 미구현입니다 — 요구사항 2)\n");
-    return 0;
+    FILE *fp = fopen(SAVE_PATH, "r");
+    if (fp == NULL) {
+        printf("[오류] 저장된 파일이 없습니다.\n");
+        return 0;
+    } else {
+        if (fscanf(fp, "%d %d %d", &curYear, &curMonth, &habitCount) != 3) {
+            printf("[오류] 저장된 파일이 없습니다.\n");
+            fclose(fp);
+            return 0;
+        }
+        
+        curDays = daysInMonth(curYear, curMonth);
+        curFirstWeekday = firstWeekdayOf(curYear, curMonth);
+        for (int i = 0; i < habitCount; i++) {
+            char tname[MAX_NAME];
+            int tcat;
+            unsigned tdonem; 
+            fscanf(fp, "%31s %d %u", tname, &tcat, &tdonem);
+            strcpy(habits[i].name, tname);
+            habits[i].cat = tcat;
+            habits[i].doneMask = tdonem;
+
+        }
+        printf("%d개 습관을 불러왔습니다.\n",habitCount);
+        fclose(fp);
+        return 1;
+    }
+    
 }
 
 /* ── [TODO 요구사항 3] 메모 — 필요한 만큼만 확보하고 반납한다 (동적 메모리) ─

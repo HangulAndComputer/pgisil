@@ -10,6 +10,7 @@ void stat(const Person *p, int *a){
 
 int main(){
     Person minsu = {"minsu", 20};
+    minsu.name = "mins";
     Person yh = {"younghee",21};
     Person pop[2] = {minsu,yh}; 
     Person *ptr = pop;
